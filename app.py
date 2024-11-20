@@ -126,32 +126,36 @@ elif nav == "ECG Analysis":
         image = Image.open(uploaded_image)
         st.image(image, caption="Uploaded Image", use_column_width=True)
         pred_class = pred_and_plot(ecg_model, image, class_names)
-        st.subheader(f"Prediction : {pred_class}")
-        #if "Myocardial Infraction" in pred_class:
-           #st.subheader("Myocardial Infraction has been predicted by the model in this patient's ECG")
-        #if "History" in pred_class:
-            #st.subheader("The patient has a history with Myocardial Infraction")
-        #if "abnormal" in pred_class:
-            #st.subheader("The patients ECG has abnormal heartbeat ")
-        #if "Normal" in pred_class:
-            #st.subheader("Patient's ECG is Normal")
+        #st.subheader(f"Prediction : {pred_class}")
+        if "Myocardial Infraction" in pred_class:
+           st.subheader("Myocardial Infraction has been predicted by the model in this patient's ECG")
+        if "History" in pred_class:
+            st.subheader("The patient has a history with Myocardial Infraction")
+        if "abnormal" in pred_class:
+            st.subheader("The patients ECG has abnormal heartbeat ")
+        if "Normal" in pred_class:
+            st.subheader("Patient's ECG is Normal")
 
 # Chatbot Page
 elif nav == "Chatbot":
     st.title("🤖 AI Chatbot")
     st.write("Ask anything or consult the chatbot for healthcare-related queries.")
+
     if "chat_history" not in st.session_state:
         st.session_state["chat_history"] = []
-    user_input = st.text_input("Your Query:")
-    if st.button("Send") and user_input:
-        response=get_gemini_response(user_input,st.session_state['chat_history'])
-        st.session_state['chat_history'].append(("User",input))
-        for chunk in response:
-            st.session_state['chat_history'].append(("Bot",chunk.text))
-    st.subheader("History")
 
-    for role,text in st.session_state['chat_history']:
-        st.write(f"{role}:{text}")
+    user_input = st.text_input("Your Query:")   
+
+    if st.button("Send") and user_input:
+        response = get_gemini_response(user_input, st.session_state['chat_history'])
+        st.session_state['chat_history'].append(("User", user_input))  # Corrected the typo from 'input' to 'user_input'
+    
+        for chunk in response:
+            st.session_state['chat_history'].append(("Bot", chunk.text))
+
+    st.subheader("History")
+    for role, text in st.session_state['chat_history']:
+        st.write(f"{role}: {text}")
 
 # Gen AI Page
 elif nav == "Gen AI":
