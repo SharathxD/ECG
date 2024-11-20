@@ -1,0 +1,8 @@
+[theme]
+primaryColor = "#3D52A0"  # Metallic Purple
+backgroundColor = "#EDE8F5"  # Light Lavender Background
+secondaryBackgroundColor = "#ADBBDA"  # Soft Lavender
+textColor = "#000000"  # Light Steel Blue Text
+font = "monospace"  # Monospace font for a modern, techy look
+
+
