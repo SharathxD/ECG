@@ -111,12 +111,12 @@ def pred_and_plot(model, image, class_names):
     return pred_class
 
 
-def generate_ecg_details(ecg_image):
+def generate_ecg_details(ecg_image,lang):
     current_date = datetime.now().strftime('%Y-%m-%d')
     prompt = f"""
-    Analyze the provided ECG image and generate a comprehensive, structured report including:
+    Analyze the provided ECG image and generate a comprehensive, structured report in this {lang} language only which includes:
 
-Patient Information
+    Patient Information
 
 1. Patient's vital signs (if identifiable): heart rate, blood pressure, respiratory rate, and oxygen saturation.
 2. Patient demographics (if available): age, sex, and medical history.
@@ -146,7 +146,8 @@ Report Requirements
 4. Report should be dated with the current date.
 
 Generatated on {current_date}
-    """
+    
+"""
     chat_session = genai_model.start_chat(history=[])
     response = chat_session.send_message([prompt])
     return response.text
@@ -226,18 +227,36 @@ elif nav == "Chatbot":
 # Gen AI Page
 elif nav == "Gen AI":
     st.title("🧠 Generate ECG Report with Generative AI")
+    
+    # Language selection specific to this page with English as the default
+    languages = [
+        "English", "Assamese", "Bengali", "Bodo", "Dogri", "Gujarati", "Hindi", "Kannada", 
+        "Kashmiri", "Konkani", "Maithili", "Malayalam", "Manipuri", "Marathi", 
+        "Nepali", "Odia", "Punjabi", "Sanskrit", "Santali", "Sindhi", "Tamil", 
+        "Telugu", "Urdu"
+    ]
+    lang = st.selectbox("Select Language for Report", options=languages, index=0)  # 'index=0' sets English as default
+
+    # File uploader for ECG image
     ecg_image = st.file_uploader("Upload ECG Image for Analysis", type=["png", "jpg", "jpeg"])
+    
     if ecg_image is not None:
         st.image(ecg_image, caption="Uploaded ECG Image", use_column_width=True)
+        
+        # Generate report button
         if st.button("Generate ECG Report"):
             with st.spinner("Analyzing ECG image..."):
-                ecg_details = generate_ecg_details(ecg_image)
+                ecg_details = generate_ecg_details(ecg_image,lang)
+            
             st.header("Generated ECG Report")
             st.markdown(ecg_details)
+            
+            # Create a downloadable document file
             doc_file_stream = create_doc(ecg_details, ecg_image)
             st.download_button(
                 label="Download ECG Report",
                 data=doc_file_stream,
-                file_name="ECG_Report.docx",
+                file_name=f"ECG_Report_{lang}.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
+
