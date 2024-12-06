@@ -193,15 +193,7 @@ elif nav == "ECG Analysis":
         image = Image.open(uploaded_image)
         st.image(image, caption="Uploaded Image", use_column_width=True)
         pred_class = pred_and_plot(ecg_model, image, class_names)
-        #st.subheader(f"Prediction : {pred_class}")
-        if "Myocardial Infraction" in pred_class:
-           st.subheader("Myocardial Infraction has been predicted by the model in this patient's ECG")
-        if "History" in pred_class:
-            st.subheader("The patient has a history with Myocardial Infraction")
-        if "abnormal" in pred_class:
-            st.subheader("The patients ECG has abnormal heartbeat ")
-        if "Normal" in pred_class:
-            st.subheader("Patient's ECG is Normal")
+        st.write(pred_class)
 
 # Chatbot Page
 elif nav == "Chatbot":
