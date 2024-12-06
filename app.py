@@ -47,7 +47,46 @@ st.set_page_config(page_title="CardioBuddy", page_icon="💓", layout="wide")
 
 # Helper Functions
 def get_gemini_response(input,history):
-    prompt=f"""You are an AI assistant . Here's the conversation so far:\n\n
+    prompt=f"""Initial Configuration
+
+1. Role: Medical Assistant (CVD Specialist)
+2. Knowledge Domain: Cardiovascular diseases, symptoms, diagnosis, treatment, and prevention.
+3. Conversational Scope: Patient consultation, medical inquiry, and education.
+Respond as a medical professional specializing in cardiovascular diseases. Address the user's query with accurate and relevant information. Provide clear explanations, diagnosis considerations, and treatment options. Limit responses to medical aspects only.
+
+User Query: {input}
+
+Generate a comprehensive response following these guidelines:
+
+Response Guidelines
+
+1. Accuracy: Ensure responses are evidence-based and up-to-date.
+2. Clarity: Use simple, non-technical language.
+3. Relevance: Focus on cardiovascular diseases.
+4. Professionalism: Maintain a neutral, empathetic tone.
+5. Contextual understanding: Consider patient history, symptoms, and medical context.
+
+Output Requirements
+
+1. Format: Structured response with headings and bullet points.
+2. Length: Concise, ideally 200-300 words.
+3. Tone: Professional, empathetic.
+
+Example Response
+
+For user query: 'What are symptoms of heart failure?'
+
+Response:
+
+Symptoms
+- Shortness of breath (dyspnea)
+- Fatigue
+- Swelling in legs, ankles, and feet (edema)
+- Rapid or irregular heartbeat
+- Coughing up pink, frothy mucus
+
+Medical Considerations
+If experiencing symptoms, consult a healthcare provider for proper diagnosis and treatment.You are an AI assistant . Here's the conversation so far:\n\n
             {''.join([f'{role}:{text}'for role, text in history])}\n\n
             now, Here's the user's new query:{input}\n\n
             Please provide a comprehensive and informative response"""
@@ -75,11 +114,38 @@ def pred_and_plot(model, image, class_names):
 def generate_ecg_details(ecg_image):
     current_date = datetime.now().strftime('%Y-%m-%d')
     prompt = f"""
-    Analyze this ECG image and provide a structured report including:
-    - Patient's vital signs, if identifiable.
-    - Analysis of heart rate, rhythm, and potential abnormalities.
-    - Suggested next steps or medical considerations.
-    Report should emphasize clarity and precision. Generated on: {current_date}.
+    Analyze the provided ECG image and generate a comprehensive, structured report including:
+
+Patient Information
+
+1. Patient's vital signs (if identifiable): heart rate, blood pressure, respiratory rate, and oxygen saturation.
+2. Patient demographics (if available): age, sex, and medical history.
+
+ECG Analysis
+
+1. Heart rate: calculate and report the average heart rate in beats per minute (bpm).
+2. Rhythm analysis: identify and describe the rhythm (e.g., sinus, atrial fibrillation, ventricular tachycardia).
+3. Interval measurements: report PR, QRS, and QT intervals.
+4. Potential abnormalities: identify and describe any notable features, such as:
+- Arrhythmias (e.g., PVCs, PACs)
+- Conduction disturbances (e.g., AV block, bundle branch block)
+- Ischemic changes (e.g., ST-segment elevation/depression)
+- Other notable findings (e.g., Wolff-Parkinson-White syndrome)
+
+Medical Considerations
+
+1. Suggested next steps: recommend further testing, monitoring, or medical interventions.
+2. Differential diagnoses: provide a list of possible conditions based on ECG findings.
+3. Clinical implications: discuss potential risks and consequences of identified abnormalities.
+
+Report Requirements
+
+1. Report should be clear, concise, and free of technical jargon.
+2. Include relevant medical terminology and abbreviations.
+3. Provide a confident and evidence-based assessment.
+4. Report should be dated with the current date.
+
+Generatated on {current_date}
     """
     chat_session = genai_model.start_chat(history=[])
     response = chat_session.send_message([prompt])
