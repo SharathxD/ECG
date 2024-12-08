@@ -43,7 +43,63 @@ class_names = [
 ]
 
 # Page Config
-st.set_page_config(page_title="CardioBuddy", page_icon="💓", layout="wide")
+st.set_page_config(page_title="CardioBuddy", page_icon="🫀", layout="wide")
+
+# Custom CSS
+st.markdown("""
+<style>
+    body {
+        color: #2c3e50;
+        background-color: #f0f3f6;
+    }
+    .main {
+        padding: 2rem;
+        border-radius: 10px;
+        background-color: #ffffff;
+    }
+    .stButton>button {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+    }
+    .stButton>button:hover {
+        background-color: #2980b9;
+    }
+    .feature-card {
+        background-color: #ffffff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        border-left: 5px solid #3498db;
+    }
+    .feature-icon {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+        color: #3498db;
+    }
+    h1, h2, h3 {
+        color: #2c3e50;
+    }
+    .stTextInput>div>div>input {
+        border-color: #3498db;
+    }
+    .stTextInput>div>div>input:focus {
+        border-color: #2980b9;
+        box-shadow: 0 0 0 1px #2980b9;
+    }
+    .stSelectbox>div>div>div {
+        border-color: #3498db;
+    }
+    .stSelectbox>div>div>div:focus {
+        border-color: #2980b9;
+        box-shadow: 0 0 0 1px #2980b9;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Helper Functions
 def get_gemini_response(input,history):
@@ -100,7 +156,6 @@ def load_and_prep_image(image, img_shape=224):
     img = img / 255.0
     return img
 
-
 def pred_and_plot(model, image, class_names):
     img = load_and_prep_image(image)
     pred = model.predict(tf.expand_dims(img, axis=0))
@@ -109,7 +164,6 @@ def pred_and_plot(model, image, class_names):
     else:
         pred_class = class_names[int(tf.round(pred)[0][0])]
     return pred_class
-
 
 def generate_ecg_details(ecg_image,lang):
     current_date = datetime.now().strftime('%Y-%m-%d')
@@ -152,7 +206,6 @@ Generatated on {current_date}
     response = chat_session.send_message([prompt])
     return response.text
 
-
 def create_doc(report_text, ecg_image):
     doc = Document()
     doc.add_heading('ECG ANALYSIS REPORT', 0)
@@ -175,30 +228,62 @@ def create_doc(report_text, ecg_image):
     file_stream.seek(0)
     return file_stream
 
-
 # Sidebar Navigation
 st.sidebar.title("Navigation")
 nav = st.sidebar.radio("Go to", ["Home", "ECG Analysis", "Chatbot", "Gen AI"])
 
 # Home Page
 if nav == "Home":
-    st.title("💓 Welcome to CardioBuddy")
-    st.write("This app provides ECG analysis, an AI chatbot for healthcare consultation, and advanced ECG report generation using Generative AI.")
+    st.markdown("<h1 style='text-align: center; color: #3498db;'>🫀 Welcome to CardioBuddy</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>Your AI-powered cardiology assistant</p>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class='feature-card'>
+            <h3><span class='feature-icon'>🔬</span> ECG Analysis</h3>
+            <p>Upload ECG images for instant AI-powered analysis and classification.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class='feature-card'>
+            <h3><span class='feature-icon'>🤖</span> AI Chatbot</h3>
+            <p>Consult our AI for healthcare-related queries and get evidence-based responses.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class='feature-card'>
+            <h3><span class='feature-icon'>🧠</span> Generative AI Reports</h3>
+            <p>Generate comprehensive ECG reports using cutting-edge AI technology.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class='feature-card'>
+            <h3><span class='feature-icon'>📊</span> Downloadable Reports</h3>
+            <p>Create and download detailed ECG analysis reports in DOCX format.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ECG Analysis Page
 elif nav == "ECG Analysis":
-    st.title("📊 ECG Analysis")
+    st.markdown("<h1 style='text-align: center; color: #3498db;'>🔬 ECG Analysis</h1>", unsafe_allow_html=True)
     uploaded_image = st.file_uploader("Upload an ECG Image", type=["jpg", "jpeg", "png"])
     if uploaded_image is not None:
         image = Image.open(uploaded_image)
         st.image(image, caption="Uploaded Image", use_column_width=True)
-        pred_class = pred_and_plot(ecg_model, image, class_names)
-        st.write(pred_class)
+        with st.spinner("Analyzing ECG..."):
+            pred_class = pred_and_plot(ecg_model, image, class_names)
+        st.success(f"Analysis Result: {pred_class}")
 
 # Chatbot Page
 elif nav == "Chatbot":
-    st.title("🤖 AI Chatbot")
-    st.write("Ask anything or consult the chatbot for healthcare-related queries.")
+    st.markdown("<h1 style='text-align: center; color: #3498db;'>🤖 AI Chatbot</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>Ask anything or consult the chatbot for healthcare-related queries.</p>", unsafe_allow_html=True)
 
     if "chat_history" not in st.session_state:
         st.session_state["chat_history"] = []
@@ -206,44 +291,41 @@ elif nav == "Chatbot":
     user_input = st.text_input("Your Query:")   
 
     if st.button("Send") and user_input:
-        response = get_gemini_response(user_input, st.session_state['chat_history'])
-        st.session_state['chat_history'].append(("User", user_input))  # Corrected the typo from 'input' to 'user_input'
+        with st.spinner("Generating response..."):
+            response = get_gemini_response(user_input, st.session_state['chat_history'])
+        st.session_state['chat_history'].append(("User", user_input))
     
         for chunk in response:
             st.session_state['chat_history'].append(("Bot", chunk.text))
 
-    st.subheader("History")
+    st.subheader("Chat History")
     for role, text in st.session_state['chat_history']:
-        st.write(f"{role}: {text}")
+        st.markdown(f"**{role}**: {text}")
 
 # Gen AI Page
 elif nav == "Gen AI":
-    st.title("🧠 Generate ECG Report with Generative AI")
+    st.markdown("<h1 style='text-align: center; color: #3498db;'>🧠 Generate ECG Report with AI</h1>", unsafe_allow_html=True)
     
-    # Language selection specific to this page with English as the default
     languages = [
         "English", "Assamese", "Bengali", "Bodo", "Dogri", "Gujarati", "Hindi", "Kannada", 
         "Kashmiri", "Konkani", "Maithili", "Malayalam", "Manipuri", "Marathi", 
         "Nepali", "Odia", "Punjabi", "Sanskrit", "Santali", "Sindhi", "Tamil", 
         "Telugu", "Urdu"
     ]
-    lang = st.selectbox("Select Language for Report", options=languages, index=0)  # 'index=0' sets English as default
+    lang = st.selectbox("Select Language for Report", options=languages, index=0)
 
-    # File uploader for ECG image
     ecg_image = st.file_uploader("Upload ECG Image for Analysis", type=["png", "jpg", "jpeg"])
     
     if ecg_image is not None:
         st.image(ecg_image, caption="Uploaded ECG Image", use_column_width=True)
         
-        # Generate report button
         if st.button("Generate ECG Report"):
             with st.spinner("Analyzing ECG image..."):
                 ecg_details = generate_ecg_details(ecg_image,lang)
             
-            st.header("Generated ECG Report")
+            st.markdown("<h2 style='text-align: center;'>Generated ECG Report</h2>", unsafe_allow_html=True)
             st.markdown(ecg_details)
             
-            # Create a downloadable document file
             doc_file_stream = create_doc(ecg_details, ecg_image)
             st.download_button(
                 label="Download ECG Report",
