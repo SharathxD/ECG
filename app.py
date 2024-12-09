@@ -48,25 +48,36 @@ st.set_page_config(page_title="CardioBuddy", page_icon="🫀", layout="wide")
 # Custom CSS
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
     body {
-        color: #2c3e50;
-        background-color: #f0f3f6;
+        font-family: 'Roboto', sans-serif;
+        color: #333333;
+        background-color: #f8f9fa;
     }
     .main {
         padding: 2rem;
         border-radius: 10px;
         background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2, h3 {
+        color: #2c3e50;
+        font-weight: 500;
     }
     .stButton>button {
         background-color: #3498db;
         color: white;
-        font-weight: bold;
+        font-weight: 500;
         border: none;
         border-radius: 5px;
         padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
         background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .feature-card {
         background-color: #ffffff;
@@ -75,17 +86,20 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         margin-bottom: 1rem;
         border-left: 5px solid #3498db;
+        transition: all 0.3s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
     .feature-icon {
         font-size: 2rem;
         margin-right: 0.5rem;
         color: #3498db;
     }
-    h1, h2, h3 {
-        color: #2c3e50;
-    }
     .stTextInput>div>div>input {
         border-color: #3498db;
+        border-radius: 5px;
     }
     .stTextInput>div>div>input:focus {
         border-color: #2980b9;
@@ -93,10 +107,90 @@ st.markdown("""
     }
     .stSelectbox>div>div>div {
         border-color: #3498db;
+        border-radius: 5px;
     }
     .stSelectbox>div>div>div:focus {
         border-color: #2980b9;
         box-shadow: 0 0 0 1px #2980b9;
+    }
+    .chat-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        height: 60vh;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-right: 10px;
+        margin-bottom: 20px;
+    }
+    .chat-message {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+    }
+    .user-message {
+        justify-content: flex-end;
+    }
+    .bot-message {
+        justify-content: flex-start;
+    }
+    .message-content {
+        max-width: 70%;
+        padding: 10px 15px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    .user-message .message-content {
+        background-color: #3498db;
+        color: white;
+        border-bottom-right-radius: 0;
+    }
+    .bot-message .message-content {
+        background-color: #f0f3f6;
+        color: #333333;
+        border-bottom-left-radius: 0;
+    }
+    .chat-input {
+        display: flex;
+        margin-top: auto;
+    }
+    .chat-input input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #3498db;
+        border-radius: 20px;
+        margin-right: 10px;
+    }
+    .chat-input button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .chat-input button:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+    }
+    .sidebar .sidebar-content {
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px;
+    }
+    .sidebar .sidebar-content .stRadio > label {
+        color: white;
+    }
+    .stProgress > div > div > div {
+        background-color: #3498db;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -229,13 +323,17 @@ def create_doc(report_text, ecg_image):
     return file_stream
 
 # Sidebar Navigation
-st.sidebar.title("Navigation")
-nav = st.sidebar.radio("Go to", ["Home", "ECG Analysis", "Chatbot", "Gen AI"])
+with st.sidebar:
+    #st.image("NAV", width=100)
+    st.title("CardioBuddy")
+    nav = st.radio("Navigation", ["Home", "ECG Analysis", "Chatbot", "Gen AI"])
 
 # Home Page
 if nav == "Home":
-    st.markdown("<h1 style='text-align: center; color: #3498db;'>🫀 Welcome to CardioBuddy</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>Your AI-powered cardiology assistant</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>🫀 Welcome to CardioBuddy</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 1.2em;'>Your AI-powered cardiology assistant</p>", unsafe_allow_html=True)
+    
+    st.write("---")
     
     col1, col2 = st.columns(2)
     
@@ -271,40 +369,73 @@ if nav == "Home":
 
 # ECG Analysis Page
 elif nav == "ECG Analysis":
-    st.markdown("<h1 style='text-align: center; color: #3498db;'>🔬 ECG Analysis</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>🔬 ECG Analysis</h1>", unsafe_allow_html=True)
+    st.write("Upload an ECG image for instant AI-powered analysis and classification.")
+    
     uploaded_image = st.file_uploader("Upload an ECG Image", type=["jpg", "jpeg", "png"])
     if uploaded_image is not None:
         image = Image.open(uploaded_image)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.image(image, caption="Uploaded ECG Image", use_column_width=True)
         with st.spinner("Analyzing ECG..."):
             pred_class = pred_and_plot(ecg_model, image, class_names)
         st.success(f"Analysis Result: {pred_class}")
+        
+        st.write("---")
+        
+        st.markdown("<h3>Interpretation</h3>", unsafe_allow_html=True)
+        st.write("Based on the AI analysis, here's a brief interpretation of the ECG:")
+        
+        if "Myocardial Infarction" in pred_class:
+            st.warning("This ECG shows signs consistent with a Myocardial Infarction (heart attack). Immediate medical attention is crucial.")
+        elif "History of MI" in pred_class:
+            st.info("This ECG indicates a history of Myocardial Infarction. Regular follow-ups and cardiac care are important.")
+        elif "abnormal heartbeat" in pred_class:
+            st.warning("This ECG shows an abnormal heartbeat pattern. Further investigation by a cardiologist is recommended.")
+        else:
+            st.success("This ECG appears to be within normal limits. However, always consult with a healthcare professional for a comprehensive evaluation.")
+        
+        st.write("Remember, AI analysis is a tool to assist medical professionals and should not replace expert medical advice.")
 
 # Chatbot Page
 elif nav == "Chatbot":
-    st.markdown("<h1 style='text-align: center; color: #3498db;'>🤖 AI Chatbot</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>Ask anything or consult the chatbot for healthcare-related queries.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>🤖 AI Chatbot</h1>", unsafe_allow_html=True)
+    st.write("Ask anything or consult the chatbot for healthcare-related queries.")
 
     if "chat_history" not in st.session_state:
         st.session_state["chat_history"] = []
 
-    user_input = st.text_input("Your Query:")   
+    
+    # Chat messages
+    st.markdown('<div class="chat-messages">', unsafe_allow_html=True)
+    for role, text in st.session_state['chat_history']:
+        if role == "User":
+            st.markdown(f'<div class="chat-message user-message"><div class="message-content">{text}</div></div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="chat-message bot-message"><div class="message-content">{text}</div></div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    if st.button("Send") and user_input:
+    # Chat input
+    st.markdown('<div class="chat-input">', unsafe_allow_html=True)
+    user_input = st.text_input("Type your message...", key="chat_input")
+    send_button = st.button("Send")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if send_button and user_input:
+        st.session_state['chat_history'].append(("User", user_input))
         with st.spinner("Generating response..."):
             response = get_gemini_response(user_input, st.session_state['chat_history'])
-        st.session_state['chat_history'].append(("User", user_input))
-    
         for chunk in response:
             st.session_state['chat_history'].append(("Bot", chunk.text))
-
-    st.subheader("Chat History")
-    for role, text in st.session_state['chat_history']:
-        st.markdown(f"**{role}**: {text}")
+        
+        # Clear the input box after sending
+        st.experimental_rerun()
 
 # Gen AI Page
 elif nav == "Gen AI":
-    st.markdown("<h1 style='text-align: center; color: #3498db;'>🧠 Generate ECG Report with AI</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>🧠 Generate ECG Report with AI</h1>", unsafe_allow_html=True)
+    st.write("Upload an ECG image and select a language to generate a comprehensive report.")
     
     languages = [
         "English", "Assamese", "Bengali", "Bodo", "Dogri", "Gujarati", "Hindi", "Kannada", 
@@ -320,9 +451,10 @@ elif nav == "Gen AI":
         st.image(ecg_image, caption="Uploaded ECG Image", use_column_width=True)
         
         if st.button("Generate ECG Report"):
-            with st.spinner("Analyzing ECG image..."):
-                ecg_details = generate_ecg_details(ecg_image,lang)
+            with st.spinner("Analyzing ECG image and generating report..."):
+                ecg_details = generate_ecg_details(ecg_image, lang)
             
+            st.success("Report generated successfully!")
             st.markdown("<h2 style='text-align: center;'>Generated ECG Report</h2>", unsafe_allow_html=True)
             st.markdown(ecg_details)
             
@@ -333,4 +465,7 @@ elif nav == "Gen AI":
                 file_name=f"ECG_Report_{lang}.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
+
+st.write("---")
+st.markdown("<p style='text-align: center;'>© 2024 CardioBuddy. All rights reserved.</p>", unsafe_allow_html=True)
 
