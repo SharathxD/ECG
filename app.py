@@ -429,8 +429,7 @@ elif nav == "Chatbot":
         for chunk in response:
             st.session_state['chat_history'].append(("Bot", chunk.text))
         
-        # Clear the input box after sending
-        st.experimental_rerun()
+
 
 # Gen AI Page
 elif nav == "Gen AI":
