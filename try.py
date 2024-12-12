@@ -26,7 +26,7 @@ generation_config = {
     "response_mime_type": "text/plain",
 }
 genai_model = genai.GenerativeModel(
-    model_name="gemini-1.5-pro",
+    model_name="gemini-pro",
     generation_config=generation_config,
 )
 
@@ -388,25 +388,6 @@ elif nav == "ECG Analysis":
         st.write("Remember, AI analysis is a tool to assist medical professionals and should not replace expert medical advice.")
 
 # Chatbot Page
-#elif nav == "Chatbot":
-    #st.title("🤖 AI Chatbot")
-    #st.write("Ask anything or consult the chatbot for healthcare-related queries.")
-#
-    #if "chat_history" not in st.session_state:
-    #    st.session_state["chat_history"] = []
-
-    #user_input = st.text_input("Your Query:")   
-
-    #if st.button("Send") and user_input:
-        #response = get_gemini_response(user_input, st.session_state['chat_history'])
-        #st.session_state['chat_history'].append(("User", user_input))  # Corrected the typo from 'input' to 'user_input'
-    
-        #for chunk in response:
-        #    st.session_state['chat_history'].append(("Bot", chunk.text))
-
-   # st.subheader("History")
-   # for role, text in st.session_state['chat_history']:
-        #st.write(f"{role}: {text}")
 elif nav == "Chatbot":
     st.title("🤖 AI Chatbot")
     st.write("Ask anything or consult the chatbot for healthcare-related queries.")
@@ -446,6 +427,9 @@ elif nav == "Chatbot":
             )
     
     st.markdown("</div>", unsafe_allow_html=True)  # Close chat-messages
+
+
+        
 
 # Gen AI Page
 elif nav == "Gen AI":
