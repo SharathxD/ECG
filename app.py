@@ -260,40 +260,31 @@ def pred_and_plot(model, image, class_names):
     return pred_class
 
 def generate_ecg_details(ecg_image,lang):
-    current_date = datetime.now().strftime('%Y-%m-%d')
     prompt = f"""
-    Analyze the provided ECG image and generate a comprehensive, structured report in this {lang} language only which includes:
+    
+    1. Role: Pharmacy Assistant
+2. Knowledge Domain: Pharmaceuticals, pharmacology, and prescription analysis
+3. Conversational Scope: Prescription explanation and guidance
 
-    Patient Information
 
-1. Patient's vital signs (if identifiable): heart rate, blood pressure, respiratory rate, and oxygen saturation.
-2. Patient demographics (if available): age, sex, and medical history.
+Analyze the following {ecg_image}prescription and provide a clear explanation in the {lang} the explaination should hold the values like 
+the given below , follow this outline only
 
-ECG Analysis
+Prescription details:
 
-1. Heart rate: calculate and report the average heart rate in beats per minute (bpm).
-2. Rhythm analysis: identify and describe the rhythm (e.g., sinus, atrial fibrillation, ventricular tachycardia).
-3. Interval measurements: report PR, QRS, and QT intervals.
-4. Potential abnormalities: identify and describe any notable features, such as:
-- Arrhythmias (e.g., PVCs, PACs)
-- Conduction disturbances (e.g., AV block, bundle branch block)
-- Ischemic changes (e.g., ST-segment elevation/depression)
-- Other notable findings (e.g., Wolff-Parkinson-White syndrome)
+Medication name: 
+Dosage: 
+Frequency: 
+Duration: 
+Special instructions: 
 
-Medical Considerations
+Provide a comprehensive response explaining:
 
-1. Suggested next steps: recommend further testing, monitoring, or medical interventions.
-2. Differential diagnoses: provide a list of possible conditions based on ECG findings.
-3. Clinical implications: discuss potential risks and consequences of identified abnormalities.
-
-Report Requirements
-
-1. Report should be clear, concise, and free of technical jargon.
-2. Include relevant medical terminology and abbreviations.
-3. Provide a confident and evidence-based assessment.
-4. Report should be dated with the current date.
-
-Generatated on {current_date}
+1. Medication purpose and benefits
+2. Dosage and frequency rationale
+3. Potential side effects and interactions
+4. Important precautions and warnings
+5. Follow-up and monitoring recommendations
     
 """
     chat_session = genai_model.start_chat(history=[])
@@ -430,11 +421,10 @@ elif nav == "Chatbot":
             st.session_state['chat_history'].append(("Bot", chunk.text))
         
 
-
 # Gen AI Page
 elif nav == "Gen AI":
-    st.markdown("<h1 style='text-align: center;'>🧠 Generate ECG Report with AI</h1>", unsafe_allow_html=True)
-    st.write("Upload an ECG image and select a language to generate a comprehensive report.")
+    st.markdown("<h1 style='text-align: center;'>🧠 Generate prescription Report with AI</h1>", unsafe_allow_html=True)
+    st.write("Upload an prescription image and select a language to generate a comprehensive report.")
     
     languages = [
         "English", "Assamese", "Bengali", "Bodo", "Dogri", "Gujarati", "Hindi", "Kannada", 
