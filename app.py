@@ -389,36 +389,24 @@ elif nav == "ECG Analysis":
 
 # Chatbot Page
 elif nav == "Chatbot":
-    st.markdown("<h1 style='text-align: center;'>🤖 AI Chatbot</h1>", unsafe_allow_html=True)
+    st.title("🤖 AI Chatbot")
     st.write("Ask anything or consult the chatbot for healthcare-related queries.")
 
     if "chat_history" not in st.session_state:
         st.session_state["chat_history"] = []
 
+    user_input = st.text_input("Your Query:")   
+
+    if st.button("Send") and user_input:
+        response = get_gemini_response(user_input, st.session_state['chat_history'])
+        st.session_state['chat_history'].append(("User", user_input))  # Corrected the typo from 'input' to 'user_input'
     
-    # Chat messages
-    st.markdown('<div class="chat-messages">', unsafe_allow_html=True)
-    for role, text in st.session_state['chat_history']:
-        if role == "User":
-            st.markdown(f'<div class="chat-message user-message"><div class="message-content">{text}</div></div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="chat-message bot-message"><div class="message-content">{text}</div></div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Chat input
-    st.markdown('<div class="chat-input">', unsafe_allow_html=True)
-    user_input = st.text_input("Type your message...", key="chat_input")
-    send_button = st.button("Send")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    if send_button and user_input:
-        st.session_state['chat_history'].append(("User", user_input))
-        with st.spinner("Generating response..."):
-            response = get_gemini_response(user_input, st.session_state['chat_history'])
         for chunk in response:
             st.session_state['chat_history'].append(("Bot", chunk.text))
+
+    st.subheader("History")
+    for role, text in st.session_state['chat_history']:
+        st.write(f"{role}: {text}")
         
 
 # Gen AI Page
