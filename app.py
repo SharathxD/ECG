@@ -261,22 +261,22 @@ def pred_and_plot(model, image, class_names):
 
 def generate_ecg_details(ecg_image,lang):
     prompt = f"""
-    
-    1. Role: Pharmacy Assistant
+  1. Role: Pharmacy Assistant
 2. Knowledge Domain: Pharmaceuticals, pharmacology, and prescription analysis
 3. Conversational Scope: Prescription explanation and guidance
 
+User Query
+Analyze the attached prescription image and provide a detailed report in the {lang} only:
 
-Analyze the following {ecg_image}prescription and provide a clear explanation in the {lang} the explaination should hold the values like 
-the given below , follow this outline only
+Image: {ecg_image}
 
-Prescription details:
+Extract the following information from the prescription image:
 
-Medication name: 
-Dosage: 
-Frequency: 
-Duration: 
-Special instructions: 
+1. Medication name
+2. Dosage
+3. Frequency
+4. Duration
+5. Special instructions
 
 Provide a comprehensive response explaining:
 
@@ -366,7 +366,7 @@ elif nav == "ECG Analysis":
     uploaded_image = st.file_uploader("Upload an ECG Image", type=["jpg", "jpeg", "png"])
     if uploaded_image is not None:
         image = Image.open(uploaded_image)
-        st.image(image, caption="Uploaded ECG Image", use_column_width=True)
+        st.image(image, caption="Uploaded ECG Image", use_container_width=True)
         with st.spinner("Analyzing ECG..."):
             pred_class = pred_and_plot(ecg_model, image, class_names)
         st.success(f"Analysis Result: {pred_class}")
@@ -437,7 +437,7 @@ elif nav == "Gen AI":
     ecg_image = st.file_uploader("Upload ECG Image for Analysis", type=["png", "jpg", "jpeg"])
     
     if ecg_image is not None:
-        st.image(ecg_image, caption="Uploaded ECG Image", use_column_width=True)
+        st.image(ecg_image, caption="Uploaded ECG Image", use_container_width=True)
         
         if st.button("Generate ECG Report"):
             with st.spinner("Analyzing ECG image and generating report..."):
